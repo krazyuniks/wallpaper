@@ -1,0 +1,1 @@
+*/5 * * * * DISPLAY=:0 feh --bg-max $(shuf -n 1 /home/ryan/Work/rust/wallpaper/image_urls.txt) >> /tmp/wallpaper.log 2>&1
