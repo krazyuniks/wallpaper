@@ -1,4 +1,4 @@
-# wallpaper
+# Rust/shuf/feh random wallpaper
 
 Scrapes img src from web page.
 
