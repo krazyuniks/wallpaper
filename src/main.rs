@@ -5,21 +5,28 @@ use std::{thread, time};
 
 fn main() {
     let urls: Vec<String> = vec![
-    // abstract
-    String::from("https://wallhaven.cc/search?q=id%3A74&categories=100&purity=100&atleast=2560x1440&sorting=views&order=desc&ai_art_filter=1&page="),
-    // nature
-    "https://wallhaven.cc/search?q=id%3A37&categories=100&purity=100&atleast=2560x1440&sorting=views&order=desc&ai_art_filter=1&page=".to_string(),
-];
+        // abstract
+        //"https://wallhaven.cc/search?q=id%3A74&categories=100&purity=100&atleast=2560x1440&sorting=views&order=desc&ai_art_filter=1&page=".to_string(),
+        // nature
+        //"https://wallhaven.cc/search?q=id%3A37&categories=100&purity=100&atleast=2560x1440&sorting=views&order=desc&ai_art_filter=1&page=".to_string(),
+        // eclipse
+        //"https://wallhaven.cc/search?q=id%3A10219&categories=100&purity=100&atleast=1920x1080&sorting=relevance&order=desc&ai_art_filter=1&page=".to_string(),
+    ];
 
     let mut file = OpenOptions::new()
-        .write(true)
+        .create(true)
+        .append(true)
         .open("image_urls.txt")
         .expect("Unable to open file");
 
+    let two_seconds = time::Duration::from_millis(2000);
+
     for url in urls {
         for i in 1..=100 {
-            let page = format!("{}{}", url, i);
-            let response = reqwest::blocking::get(&page).unwrap().text().unwrap();
+            let response = reqwest::blocking::get(format!("{}{}", url, i))
+                .unwrap()
+                .text()
+                .unwrap();
             //println!("page: {}", response);
 
             get_images(&response).iter().for_each(|img| {
@@ -28,7 +35,6 @@ fn main() {
                     .expect("Unable to write data");
             });
 
-            let two_seconds = time::Duration::from_millis(2000);
             thread::sleep(two_seconds);
         }
     }
@@ -36,7 +42,6 @@ fn main() {
 
 fn get_images(html: &str) -> Vec<String> {
     let document = scraper::Html::parse_document(&html);
-
     let thumbs_selector = scraper::Selector::parse("#thumbs > section:nth-child(1)").unwrap();
     let li_selector = scraper::Selector::parse("li").unwrap();
     let figure_selector = scraper::Selector::parse("figure").unwrap();
