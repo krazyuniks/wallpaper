@@ -1,4 +1,3 @@
-use scraper;
 use std::fs::OpenOptions;
 use std::io::Write;
 use std::{thread, time};
@@ -6,11 +5,11 @@ use std::{thread, time};
 fn main() {
     let urls: Vec<String> = vec![
         // abstract
-        //"https://wallhaven.cc/search?q=id%3A74&categories=100&purity=100&atleast=2560x1440&sorting=views&order=desc&ai_art_filter=1&page=".to_string(),
+        "https://wallhaven.cc/search?q=id%3A74&categories=100&purity=100&atleast=2560x1440&sorting=views&order=desc&ai_art_filter=1&page=".to_string(),
         // nature
-        //"https://wallhaven.cc/search?q=id%3A37&categories=100&purity=100&atleast=2560x1440&sorting=views&order=desc&ai_art_filter=1&page=".to_string(),
+        "https://wallhaven.cc/search?q=id%3A37&categories=100&purity=100&atleast=2560x1440&sorting=views&order=desc&ai_art_filter=1&page=".to_string(),
         // eclipse
-        //"https://wallhaven.cc/search?q=id%3A10219&categories=100&purity=100&atleast=1920x1080&sorting=relevance&order=desc&ai_art_filter=1&page=".to_string(),
+        "https://wallhaven.cc/search?q=id%3A10219&categories=100&purity=100&atleast=1920x1080&sorting=relevance&order=desc&ai_art_filter=1&page=".to_string(),
     ];
 
     let mut file = OpenOptions::new()
@@ -23,10 +22,12 @@ fn main() {
 
     for url in urls {
         for i in 1..=100 {
-            let response = reqwest::blocking::get(format!("{}{}", url, i))
-                .unwrap()
-                .text()
-                .unwrap();
+            let response = reqwest::blocking::get(format!("{}{}", url, i));
+            if response.is_err() {
+                println!("Error: {}", response.err().unwrap());
+                continue;
+            }
+            let response = response.unwrap().text().unwrap();
             //println!("page: {}", response);
 
             get_images(&response).iter().for_each(|img| {
